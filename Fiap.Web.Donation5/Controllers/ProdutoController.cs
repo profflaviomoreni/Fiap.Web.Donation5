@@ -37,6 +37,49 @@ namespace Fiap.Web.Donation5.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(new ProdutoModel());
+        }
+
+
+        [HttpPost]
+        public IActionResult Create(ProdutoModel produtoModel)
+        {
+            if (string.IsNullOrEmpty(produtoModel.Descricao))
+            {
+                ViewBag.ErrorMessage = "A descrição é requerida";
+                return View(produtoModel);
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"O produto {produtoModel.NomeProduto} foi criado com sucesso";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var produto = ListarProdutosMock().Where(p => p.ProdutoId == id).FirstOrDefault();
+
+            // banco de dados.delete(id);
+
+            TempData["SuccessMessage"] = $"O produto {produto.NomeProduto} foi removido com sucesso";
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpGet]
+        public IActionResult Detail(int id)
+        {
+            var produto = ListarProdutosMock().Where(p => p.ProdutoId == id).FirstOrDefault();
+
+            return View(produto);
+        }
+
 
 
 
