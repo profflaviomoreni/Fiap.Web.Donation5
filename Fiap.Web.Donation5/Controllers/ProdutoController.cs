@@ -1,4 +1,5 @@
 ﻿using Fiap.Web.Donation5.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fiap.Web.Donation5.Controllers
@@ -9,7 +10,6 @@ namespace Fiap.Web.Donation5.Controllers
         public IActionResult Index()
         {
             var produtos = ListarProdutosMock();
-
             return View(produtos);
         }
 
