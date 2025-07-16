@@ -18,6 +18,11 @@ namespace Fiap.Web.Donation5.Models
         //[Column("NM_CATEGORIA")]
         public string NomeCategoria { get; set; }
 
+
+        [Required]
+        [StringLength(100)]
+        public string Descricao { get; set; }
+
         [NotMapped]
         public string? Token { get; set; }
     }

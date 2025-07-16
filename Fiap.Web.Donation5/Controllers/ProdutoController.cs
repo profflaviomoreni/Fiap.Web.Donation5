@@ -1,41 +1,29 @@
-﻿using Fiap.Web.Donation5.Models;
-using Microsoft.AspNetCore.Components;
+﻿using Fiap.Web.Donation5.Data;
+using Fiap.Web.Donation5.Models;
+using Fiap.Web.Donation5.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fiap.Web.Donation5.Controllers
 {
     public class ProdutoController : Controller
     {
+        private readonly int UserId = 1;
+
+        private readonly DataContext _dataContext;
+        private readonly ProdutoRepository _produtoRepository;
+
+        public ProdutoController(DataContext dataContext)
+        {
+            _dataContext = dataContext;
+            _produtoRepository = new ProdutoRepository(dataContext);
+        }
+
         [HttpGet]
         public IActionResult Index()
         {
-            var produtos = ListarProdutosMock();
+            var produtos = _produtoRepository.FindAll();
             return View(produtos);
         }
-
-
-        [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var produto = ListarProdutosMock().Where( p => p.ProdutoId == id).FirstOrDefault();
-
-            return View(produto);
-        }
-
-        [HttpPost]
-        public IActionResult Edit(ProdutoModel produtoModel)
-        {
-            if ( string.IsNullOrEmpty(produtoModel.Descricao) )
-            {
-                ViewBag.ErrorMessage = "A descrição é requerida";
-                return View(produtoModel);
-            } else
-            {
-                TempData["SuccessMessage"] = $"O produto {produtoModel.NomeProduto} foi alterado com sucesso";
-                return RedirectToAction(nameof(Index));
-            }
-        }
-
 
         [HttpGet]
         public IActionResult Create()
@@ -43,86 +31,64 @@ namespace Fiap.Web.Donation5.Controllers
             return View(new ProdutoModel());
         }
 
-
         [HttpPost]
         public IActionResult Create(ProdutoModel produtoModel)
         {
-            if (string.IsNullOrEmpty(produtoModel.Descricao))
+
+            produtoModel.UsuarioId = UserId;
+
+            if (ModelState.IsValid)
             {
-                ViewBag.ErrorMessage = "A descrição é requerida";
-                return View(produtoModel);
+                _dataContext.Produtos.Add(produtoModel);
+                _dataContext.SaveChanges();
+
+                var mensagem = $"O produto {produtoModel.NomeProduto} foi inserido com sucesso";
+                TempData["SuccessMessage"] = mensagem;
+                return RedirectToAction(nameof(Index));
             }
             else
             {
-                TempData["SuccessMessage"] = $"O produto {produtoModel.NomeProduto} foi criado com sucesso";
-                return RedirectToAction(nameof(Index));
+                return View(new ProdutoModel());
             }
+
         }
 
 
         [HttpGet]
-        public IActionResult Delete(int id)
+        public IActionResult Editar(int id)
         {
-            var produto = ListarProdutosMock().Where(p => p.ProdutoId == id).FirstOrDefault();
-
-            // banco de dados.delete(id);
-
-            TempData["SuccessMessage"] = $"O produto {produto.NomeProduto} foi removido com sucesso";
-            return RedirectToAction(nameof(Index));
-        }
-
-
-        [HttpGet]
-        public IActionResult Detail(int id)
-        {
-            var produto = ListarProdutosMock().Where(p => p.ProdutoId == id).FirstOrDefault();
-
+            var produto = _produtoRepository.FindById(id);
             return View(produto);
         }
 
 
-
-
-        private List<ProdutoModel> ListarProdutosMock()
+        [HttpPost]
+        public IActionResult Editar(ProdutoModel produtoModel)
         {
-            // SELECT * FROM produtos ...
-            var produtos = new List<ProdutoModel>{
-                new ProdutoModel()
-                {
-                    ProdutoId = 1,
-                    NomeProduto = "Iphone 11",
-                    CategoriaId = 1,
-                    Disponivel = true,
-                    DataExpiracao = DateTime.Now,
-                },
-                new ProdutoModel()
-                {
-                    ProdutoId = 2,
-                    NomeProduto = "Iphone 12",
-                    CategoriaId = 2,
-                    Disponivel = true,
-                    DataExpiracao = DateTime.Now,
-                },
-                new ProdutoModel()
-                {
-                    ProdutoId = 3,
-                    NomeProduto = "Iphone 13",
-                    CategoriaId = 1,
-                    Disponivel = true,
-                    DataExpiracao = DateTime.Now,
-                },
-                new ProdutoModel()
-                {
-                    ProdutoId = 4,
-                    NomeProduto = "Iphone 14",
-                    CategoriaId = 1,
-                    Disponivel = false,
-                    DataExpiracao = DateTime.Now,
-                },
-            };
+            produtoModel.UsuarioId = UserId;
 
-            return produtos;
+            if (string.IsNullOrEmpty(produtoModel.NomeProduto))
+            {
+                var mensagem = "O campo Nome é requerido, favor preencher";
+                ViewBag.ErrorMessage = mensagem;
+                return View(produtoModel);
+            }
+            else
+            {
+                var mensagem = $"O produto {produtoModel.NomeProduto} foi alterado com sucesso";
+                TempData["SuccessMessage"] = mensagem;
+                return RedirectToAction(nameof(Index));
+            }
 
         }
+
+
+        [HttpGet]
+        public IActionResult Detalhe(int id)
+        {
+            var produto = _produtoRepository.FindById(id);
+            return View(produto);
+        }
+
     }
 }
