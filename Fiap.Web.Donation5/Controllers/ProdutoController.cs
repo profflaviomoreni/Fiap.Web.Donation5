@@ -9,13 +9,14 @@ namespace Fiap.Web.Donation5.Controllers
     {
         private readonly int UserId = 1;
 
-        private readonly DataContext _dataContext;
+
         private readonly ProdutoRepository _produtoRepository;
+        private readonly CategoriaRepository _categoriaRepository;
 
         public ProdutoController(DataContext dataContext)
         {
-            _dataContext = dataContext;
             _produtoRepository = new ProdutoRepository(dataContext);
+            _categoriaRepository = new CategoriaRepository(dataContext);
         }
 
         [HttpGet]
@@ -28,6 +29,9 @@ namespace Fiap.Web.Donation5.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            var categorias = _categoriaRepository.FindAll();
+            ViewBag.Categorias = categorias;
+
             return View(new ProdutoModel());
         }
 
@@ -39,8 +43,7 @@ namespace Fiap.Web.Donation5.Controllers
 
             if (ModelState.IsValid)
             {
-                _dataContext.Produtos.Add(produtoModel);
-                _dataContext.SaveChanges();
+                _produtoRepository.Insert(produtoModel);
 
                 var mensagem = $"O produto {produtoModel.NomeProduto} foi inserido com sucesso";
                 TempData["SuccessMessage"] = mensagem;
@@ -48,6 +51,9 @@ namespace Fiap.Web.Donation5.Controllers
             }
             else
             {
+                var categorias = _categoriaRepository.FindAll();
+                ViewBag.Categorias = categorias;
+
                 return View(new ProdutoModel());
             }
 
@@ -55,29 +61,36 @@ namespace Fiap.Web.Donation5.Controllers
 
 
         [HttpGet]
-        public IActionResult Editar(int id)
+        public IActionResult Edit(int id)
         {
             var produto = _produtoRepository.FindById(id);
+
+            var categorias = _categoriaRepository.FindAll();
+            ViewBag.Categorias = categorias;
+
             return View(produto);
         }
 
 
         [HttpPost]
-        public IActionResult Editar(ProdutoModel produtoModel)
+        public IActionResult Edit(ProdutoModel produtoModel)
         {
-            produtoModel.UsuarioId = UserId;
-
-            if (string.IsNullOrEmpty(produtoModel.NomeProduto))
+            if (ModelState.IsValid)
             {
-                var mensagem = "O campo Nome é requerido, favor preencher";
-                ViewBag.ErrorMessage = mensagem;
-                return View(produtoModel);
+                produtoModel.UsuarioId = UserId;
+                _produtoRepository.Update(produtoModel);
+
+                TempData["MensagemSucesso"] = $"Produto {produtoModel.NomeProduto} alterado com sucesso";
+                return RedirectToAction(nameof(Index));
             }
             else
             {
-                var mensagem = $"O produto {produtoModel.NomeProduto} foi alterado com sucesso";
-                TempData["SuccessMessage"] = mensagem;
-                return RedirectToAction(nameof(Index));
+                ViewBag.MensagemErro = "Preencha todos os dados corretamente";
+
+                var categorias = _categoriaRepository.FindAll();
+                ViewBag.Categorias = categorias;
+
+                return View(produtoModel);
             }
 
         }
@@ -88,6 +101,13 @@ namespace Fiap.Web.Donation5.Controllers
         {
             var produto = _produtoRepository.FindById(id);
             return View(produto);
+        }
+
+
+        private void LoadCategoriasCombo()
+        {
+            var categorias = _categoriaRepository.FindAll();
+            ViewBag.Categorias = categorias;
         }
 
     }
