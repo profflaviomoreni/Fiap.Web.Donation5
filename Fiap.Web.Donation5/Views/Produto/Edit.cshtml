@@ -49,17 +49,9 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="CategoriaId" class="control-label"></label>
-                        <select asp-for="CategoriaId" class="control-label">
+                        <select asp-for="CategoriaId" asp-items="@ViewBag.Categorias" class="control-label">
                             <option value="">Selecione</option>
-                            @foreach( var item in ViewBag.Categorias )
-                            {
-                                <option value="@item.CategoriaId">@item.NomeCategoria</option>
-                            }
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="UsuarioId" class="control-label"></label>
-                        <input asp-for="UsuarioId" class="form-control"></input>
                     </div>
 
                     <hr class="hr" />

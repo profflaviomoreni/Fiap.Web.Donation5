@@ -28,7 +28,8 @@ namespace Fiap.Web.Donation5.Models
 
         public bool Disponivel { get; set; } = true;
 
-        [Required]
+        [Required(ErrorMessage = "O valor é requerido")]
+        [Range(minimum: 10, maximum:30000, ErrorMessage = "O valor do produto deverá ser entre R$ 10 e R$ 30.000")]
         public double Valor { get; set; }
 
         public DateTime DataCadastro { get; set; } = DateTime.Now;

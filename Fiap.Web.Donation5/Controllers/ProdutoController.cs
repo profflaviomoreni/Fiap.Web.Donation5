@@ -2,6 +2,7 @@
 using Fiap.Web.Donation5.Models;
 using Fiap.Web.Donation5.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Fiap.Web.Donation5.Controllers
 {
@@ -22,16 +23,19 @@ namespace Fiap.Web.Donation5.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var produtos = _produtoRepository.FindAll();
+            //var produtos = _produtoRepository.FindAllWithCategoriaAndUsuario();
+            //var produtos = _produtoRepository.FindAllAvailablesWithCategoriaAndUsuario();
+            //var produtos = _produtoRepository.FindAllAvailablesWithCategoriaAndUsuarioByUserId(2);
+            //var produtos = _produtoRepository.FindAllAvailablesForChangeWithCategoriaAndUsuario(2);
+            var produtos = _produtoRepository.FindAllWithCategoriaAndUsuarioByName("Iphone");
+
             return View(produtos);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            var categorias = _categoriaRepository.FindAll();
-            ViewBag.Categorias = categorias;
-
+            LoadCategoriasCombo();
             return View(new ProdutoModel());
         }
 
@@ -51,9 +55,7 @@ namespace Fiap.Web.Donation5.Controllers
             }
             else
             {
-                var categorias = _categoriaRepository.FindAll();
-                ViewBag.Categorias = categorias;
-
+                LoadCategoriasCombo();
                 return View(new ProdutoModel());
             }
 
@@ -64,10 +66,7 @@ namespace Fiap.Web.Donation5.Controllers
         public IActionResult Edit(int id)
         {
             var produto = _produtoRepository.FindById(id);
-
-            var categorias = _categoriaRepository.FindAll();
-            ViewBag.Categorias = categorias;
-
+            LoadCategoriasCombo();
             return View(produto);
         }
 
@@ -86,13 +85,9 @@ namespace Fiap.Web.Donation5.Controllers
             else
             {
                 ViewBag.MensagemErro = "Preencha todos os dados corretamente";
-
-                var categorias = _categoriaRepository.FindAll();
-                ViewBag.Categorias = categorias;
-
+                LoadCategoriasCombo();
                 return View(produtoModel);
             }
-
         }
 
 
@@ -107,7 +102,8 @@ namespace Fiap.Web.Donation5.Controllers
         private void LoadCategoriasCombo()
         {
             var categorias = _categoriaRepository.FindAll();
-            ViewBag.Categorias = categorias;
+            var selectCategorias = new SelectList(categorias, "CategoriaId", "NomeCategoria");
+            ViewBag.Categorias = selectCategorias;
         }
 
     }

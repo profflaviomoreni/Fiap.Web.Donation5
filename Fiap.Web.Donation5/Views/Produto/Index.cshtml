@@ -16,6 +16,7 @@
             <th data-field="id">Id</th>
             <th data-field="name">Nome</th>
             <th data-field="tipo">Categoria</th>
+            <th data-field="dono">Dono</th>
             <th data-field="disponivel">Disponível</th>
             <th data-field="dataexpiracao">Expiração</th>
             <th class="actions" width="220">Ações</th>
@@ -31,13 +32,16 @@
         {
             @foreach (var item in Model)
             {
-                <partial name="_ProdutoItem" model="@item" />
-
                 <!--
+                <partial name="_ProdutoItem" model="@item" />
+                -->
+
+                
                 <tr>
                     <td data-field="id">@item.ProdutoId</td>
                     <td data-field="name">@item.NomeProduto</td>
-                    <td data-field="categoria">@item.CategoriaId</td>
+                    <td data-field="categoria">@item.Categoria.NomeCategoria</td>
+                    <td data-field="dono">@item.Usuario.Nome</td>
                     <td data-field="disponivel">@item.Disponivel</td>
                     <td data-field="dataExpiracao">@item.DataExpiracao</td>
                     <td class="actions" width="220">
@@ -46,7 +50,7 @@
                         <a asp-controller="Produto" asp-action="Delete" asp-route-id="@item.ProdutoId">Remover</a>
                     </td>
                 </tr>
-                -->
+                
             }
         }
 
