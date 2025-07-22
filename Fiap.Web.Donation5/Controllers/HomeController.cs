@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Fiap.Web.Donation5.Controllers.Filters;
 using Fiap.Web.Donation5.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ namespace Fiap.Web.Donation5.Controllers
             return View();
         }
 
+        [Autenticado]
         public IActionResult Privacy()
         {
             return View();
