@@ -1,4 +1,5 @@
-﻿using Fiap.Web.Donation5.Data;
+﻿using Fiap.Web.Donation5.Controllers.Filters;
+using Fiap.Web.Donation5.Data;
 using Fiap.Web.Donation5.Models;
 using Fiap.Web.Donation5.Repository;
 using Microsoft.AspNetCore.Mvc;
@@ -6,10 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Fiap.Web.Donation5.Controllers
 {
-    public class ProdutoController : Controller
-    {
-        private readonly int UserId = 1;
 
+    [Autenticado]
+    public class ProdutoController : BaseController
+    {
 
         private readonly ProdutoRepository _produtoRepository;
         private readonly CategoriaRepository _categoriaRepository;
@@ -23,11 +24,11 @@ namespace Fiap.Web.Donation5.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            //var produtos = _produtoRepository.FindAllWithCategoriaAndUsuario();
+            var produtos = _produtoRepository.FindAllWithCategoriaAndUsuario();
             //var produtos = _produtoRepository.FindAllAvailablesWithCategoriaAndUsuario();
             //var produtos = _produtoRepository.FindAllAvailablesWithCategoriaAndUsuarioByUserId(2);
             //var produtos = _produtoRepository.FindAllAvailablesForChangeWithCategoriaAndUsuario(2);
-            var produtos = _produtoRepository.FindAllWithCategoriaAndUsuarioByName("Iphone");
+            //var produtos = _produtoRepository.FindAllWithCategoriaAndUsuarioByName("Iphone");
 
             return View(produtos);
         }
@@ -43,7 +44,7 @@ namespace Fiap.Web.Donation5.Controllers
         public IActionResult Create(ProdutoModel produtoModel)
         {
 
-            produtoModel.UsuarioId = UserId;
+            produtoModel.UsuarioId = UsuarioLogado.UsuarioId;
 
             if (ModelState.IsValid)
             {
@@ -76,7 +77,7 @@ namespace Fiap.Web.Donation5.Controllers
         {
             if (ModelState.IsValid)
             {
-                produtoModel.UsuarioId = UserId;
+                produtoModel.UsuarioId = UsuarioLogado.UsuarioId;
                 _produtoRepository.Update(produtoModel);
 
                 TempData["MensagemSucesso"] = $"Produto {produtoModel.NomeProduto} alterado com sucesso";

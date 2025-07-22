@@ -1,12 +1,25 @@
-﻿@{
+﻿@using System.Text.Json;
+
+@{
     //string url = Context.Request.Path;
 
     //if ( string.Equals(url,"/") || string.Equals(url,"/Home") )
     //{
-        Layout = "_Layout";
+    Layout = "_Layout";
     //} else
     //{
     //    Layout = "_LayoutDark";
     //}
-    
+
+
+    UsuarioModel? usuarioModel = null;
+
+    var usuarioJson = Context.Session.GetString("usuarioLogado");
+    if ( ! string.IsNullOrEmpty(usuarioJson) )
+    {
+        var usuario = JsonSerializer.Deserialize<UsuarioModel>(usuarioJson);
+        ViewBag.UsuarioLogado = usuario;
+    }
+
+
 }
