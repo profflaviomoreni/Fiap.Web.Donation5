@@ -62,7 +62,7 @@ namespace Fiap.Web.Donation5.Repository
             return produtos ?? new List<ProdutoModel>();
         }
 
-        public List<ProdutoModel> FindAllAvailablesWithCategoriaAndUsuarioByUserId(int userId)
+        public IList<ProdutoModel> FindAllAvailablesWithCategoriaAndUsuarioByUserId(int userId)
         {
             var produtos = _dataContext.Produtos.AsNoTracking()
                                 .Where(p =>
@@ -77,7 +77,7 @@ namespace Fiap.Web.Donation5.Repository
             return produtos ?? new List<ProdutoModel>();
         }
 
-        public List<ProdutoModel> FindAllAvailablesForChangeWithCategoriaAndUsuario(int userId)
+        public IList<ProdutoModel> FindAllAvailablesForChangeWithCategoriaAndUsuario(int userId)
         {
             var produtos = _dataContext.Produtos.AsNoTracking()
                                 .Where(p =>

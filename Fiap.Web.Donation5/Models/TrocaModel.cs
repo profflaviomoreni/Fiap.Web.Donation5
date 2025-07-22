@@ -25,14 +25,14 @@ namespace Fiap.Web.Donation5.Models
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
 
 
-        public int ProdutoIdMeu; // FK
+        public int ProdutoIdMeu { get; set; } // FK
         
         [ForeignKey(nameof(ProdutoIdMeu))]
         public ProdutoModel ProdutoMeu { get; set; } // Navigation Property
 
 
 
-        public int ProdutoIdEscolhido;
+        public int ProdutoIdEscolhido { get; set; }
 
         [ForeignKey(nameof(ProdutoIdEscolhido))]
         public ProdutoModel ProdutoEscolhido { get; set; } // Navigation Property

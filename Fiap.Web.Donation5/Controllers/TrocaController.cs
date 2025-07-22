@@ -2,6 +2,7 @@
 using Fiap.Web.Donation5.Models;
 using Fiap.Web.Donation5.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Fiap.Web.Donation5.Controllers
 {
@@ -19,9 +20,18 @@ namespace Fiap.Web.Donation5.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int id)
         {
-            return View();
+            // Dados do produto escolhido
+            var produtoEscolhido = _produtoRepository.FindById(id);
+            var trocaModel = new TrocaModel();
+            trocaModel.ProdutoEscolhido = produtoEscolhido;
+
+            // Combo com os meus produtos
+            var meusProdutos = _produtoRepository.FindAllAvailablesWithCategoriaAndUsuarioByUserId(UsuarioLogado.UsuarioId);
+            ViewBag.MeusProdutos = new SelectList(meusProdutos, "ProdutoId", "NomeProduto");
+
+            return View(trocaModel);
         }
 
 

@@ -1,8 +1,34 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IList<ProdutoModel>
+
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Vitrine</h1>
+
+    @if (!string.IsNullOrEmpty(TempData["Sucesso"] as string))
+    {
+        <div class="alert alert-info">@TempData["Sucesso"]</div>
+    }
+
+    @if (!string.IsNullOrEmpty(TempData["Erro"] as string))
+    {
+        <div class="alert alert-warning">@TempData["Erro"]</div>
+    }
+
+    <div class="d-flex flex-wrap">
+        @foreach( var produto in Model ) {
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">@produto.NomeProduto</h5>
+                <p class="card-text">@produto.Descricao</p>
+                <p class="card-text">@produto.Valor</p>
+                <p class="card-text">@produto.Categoria.NomeCategoria</p>
+                <p class="card-text">@produto.Usuario.Email</p>
+                @if (ViewBag.UsuarioLogado != null)
+                {
+                    <a asp-controller="Troca" asp-action="Index" asp-route-id="@produto.ProdutoId" class="btn btn-primary">Trocar</a>
+                }
+            </div>
+        </div>
+        }
+    </div>
 </div>
